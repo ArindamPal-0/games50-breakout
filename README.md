@@ -9,6 +9,12 @@ Breakout - Lecture 2 [youtube video link](https://www.youtube.com/watch?v=F86edI
 
 <br>
 
+State Machine:
+
+![breakout-statemachine.png](breakout-statemachine.png)
+
+<br>
+
 ## Setup
 
 Download and install LÖVE2D from [https://love2d.org/](https://love2d.org/).
