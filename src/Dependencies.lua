@@ -9,6 +9,9 @@ Class = require 'lib/class'
 -- a few global constants, centralized
 require 'src/constants'
 
+-- the ball that travels around, breaking bircks and triggering lives lost
+require 'src/Ball'
+
 -- the rectangular entity the player controls, which deflects the ball
 require 'src/Paddle'
 
