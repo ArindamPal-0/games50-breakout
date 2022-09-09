@@ -31,6 +31,11 @@ function love.load()
         ['particle'] = love.graphics.newImage('graphics/particle.png'),
     }
 
+    -- Quads we will generate for all of our textures; Quads allow us to show only part of a texture and not the entire thing
+    gFrames = {
+        ['paddles'] = GenerateQuadsPaddles(gTextures['main'])
+    }
+
     -- initialize our virtual resolution, which will be rendered within our actual window no matter its dimensions
     push:setupScreen(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, WINDOW_WIDTH, WINDOW_HEIGHT, {
         vsync = true,
@@ -57,6 +62,10 @@ function love.load()
         ['music'] = love.audio.newSource('sounds/music.wav', 'static'),
     }
 
+    for i, sound in pairs(gSounds) do
+        sound:setVolume(0.05)
+    end
+
     --[[
         the state machine we'll be using to transition between various states in our game instead of clumping them together in our update and draw methods
 
@@ -69,7 +78,8 @@ function love.load()
         6. 'game-over' (the player has lost; display score and allow restart)
     ]]
     gStateMachine = StateMachine {
-        ['start'] = function() return StartState() end
+        ['start'] = function() return StartState() end,
+        ['play'] = function() return PlayState() end
     }
     gStateMachine:change('start')
 
