@@ -17,6 +17,8 @@ function PlayState:init()
     self.ball.dx = math.random(-200, 200)
     self.ball.dy = math.random(-50, -60)
 
+    -- use the "static" createMap function to generate a bricks table
+    self.bricks = LevelMaker.createMap()
 
     self.paused = false
 end
@@ -46,6 +48,15 @@ function PlayState:update(dt)
         gSounds['paddle-hit']:play()
     end
 
+    -- detect collision across all bricks with the ball
+    for k, brick in pairs(self.bricks) do
+        -- only check collision if we're in play
+        if brick.inPlay and self.ball:collides(brick) then
+            -- trigger the brick's hit function, which removes it from play
+            brick:hit()
+        end
+    end
+
 
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
@@ -53,6 +64,11 @@ function PlayState:update(dt)
 end
 
 function PlayState:render()
+    -- render bricks
+    for k, brick in pairs(self.bricks) do
+        brick:render()
+    end
+
     self.paddle:render()
     self.ball:render()
 
