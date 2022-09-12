@@ -1,26 +1,15 @@
 PlayState = Class{__includes = BaseState}
 
-function PlayState:init()
-    self.paddle = Paddle()
-
-    -- initialize ball with skin #1; different skins = different sprites
-    self.ball = Ball(1)
-    -- self.ball = Ball(math.random(7))
-
-    -- give ball position in the center
-    -- self.ball.x = VIRTUAL_WIDTH / 2 - 4
-    -- self.ball.y = VIRTUAL_HEIGHT - 42
-    self.ball:reset()
-
+function PlayState:enter(params)
+    self.paddle = params.paddle
+    self.bricks = params.bricks
+    self.health = params.health
+    self.score = params.score
+    self.ball = params.ball
 
     -- give ball random starting velocity
     self.ball.dx = math.random(-200, 200)
     self.ball.dy = math.random(-50, -60)
-
-    -- use the "static" createMap function to generate a bricks table
-    self.bricks = LevelMaker.createMap()
-
-    self.paused = false
 end
 
 function PlayState:update(dt)
@@ -66,6 +55,10 @@ function PlayState:update(dt)
     for k, brick in pairs(self.bricks) do
         -- only check collision if we're in play
         if brick.inPlay and self.ball:collides(brick) then
+
+            -- add to score
+            self.score = self.score + 10
+
             -- trigger the brick's hit function, which removes it from play
             brick:hit()
 
@@ -109,6 +102,25 @@ function PlayState:update(dt)
         end
     end
 
+    -- if ball goes below bounds, revert to serve state and decrease health
+    if self.ball.y >= VIRTUAL_HEIGHT then
+        self.health = self.health - 1
+        gSounds['hurt']:play()
+
+        if self.health == 0 then
+            gStateMachine:change('game-over', {
+                score = self.score
+            })
+        else
+            gStateMachine:change('serve', {
+                paddle = self.paddle,
+                bricks = self.bricks,
+                health = self.health,
+                score = self.score
+            })
+        end
+    end
+
 
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
@@ -123,6 +135,9 @@ function PlayState:render()
 
     self.paddle:render()
     self.ball:render()
+
+    renderScore(self.score)
+    renderHealth(self.health)
 
     -- pause text, if paused
     if self.pause then
