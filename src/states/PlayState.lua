@@ -6,6 +6,7 @@ function PlayState:enter(params)
     self.health = params.health
     self.score = params.score
     self.ball = params.ball
+    self.level = params.level
 
     -- give ball random starting velocity
     self.ball.dx = math.random(-200, 200)
@@ -21,7 +22,7 @@ function PlayState:update(dt)
             return
         end
     elseif love.keyboard.wasPressed('space') then
-        self.pause = true
+        self.paused = true
         gSounds['pause']:play()
         return
     end
@@ -62,6 +63,19 @@ function PlayState:update(dt)
             -- trigger the brick's hit function, which removes it from play
             brick:hit()
 
+            -- go to our victory screen if there are no more bricks left
+            if self:checkVictory() then
+                gSounds['victory']:play()
+
+                gStateMachine:change('victory', {
+                    level = self.level,
+                    paddle = self.paddle,
+                    health = self.health,
+                    score = self.score,
+                    ball = self.ball
+                })
+            end
+
             --[[
                 collision code for bricks
 
@@ -95,7 +109,9 @@ function PlayState:update(dt)
             end
 
             -- slightly scale the y velocity to speed up the game
-            self.ball.dy = self.ball.dy * 1.02
+            if math.abs(self.ball.dy) < 150 then
+                self.ball.dy = self.ball.dy * 1.02
+            end
 
             -- only allow colliding with one brick, for corners
             break
@@ -116,7 +132,8 @@ function PlayState:update(dt)
                 paddle = self.paddle,
                 bricks = self.bricks,
                 health = self.health,
-                score = self.score
+                score = self.score,
+                level = self.level
             })
         end
     end
@@ -124,6 +141,35 @@ function PlayState:update(dt)
     -- for rendering particle system
     for k, brick in pairs(self.bricks) do
         brick:update(dt)
+    end
+
+    -- for debug purposes
+    -- deleting all bricks
+    if love.keyboard.wasPressed('i') then
+        for k, brick in pairs(self.bricks) do
+            brick.inPlay = false
+        end
+
+        if self:checkVictory() then
+            gSounds['victory']:play()
+
+            gStateMachine:change('victory', {
+                level = self.level,
+                paddle = self.paddle,
+                health = self.health,
+                score = self.score,
+                ball = self.ball
+            })
+        end
+    end
+
+    -- delete all bricks except one
+    if love.keyboard.wasPressed('o') then
+        for k, brick in pairs(self.bricks) do
+            if k < #self.bricks then
+                brick.inPlay = false
+            end
+        end
     end
 
     if love.keyboard.wasPressed('escape') then
@@ -149,8 +195,18 @@ function PlayState:render()
     renderHealth(self.health)
 
     -- pause text, if paused
-    if self.pause then
+    if self.paused then
         love.graphics.setFont(gFonts['large'])
         love.graphics.printf("PAUSED", 0, VIRTUAL_HEIGHT / 2 - 16, VIRTUAL_WIDTH, 'center')
     end
+end
+
+function PlayState:checkVictory()
+    for k, brick in pairs(self.bricks) do
+        if brick.inPlay then
+            return false
+        end
+    end
+
+    return true
 end

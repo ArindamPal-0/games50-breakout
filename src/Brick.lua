@@ -2,6 +2,7 @@
 Brick = Class{}
 
 -- some of the colors in our palette (to be used with particle systems)
+--[[
 paletteColors = {
     -- red
     [1] = {
@@ -35,6 +36,40 @@ paletteColors = {
         ['g'] = 155,
         ['b'] = 255
     },
+}
+]]
+
+paletteColors = {
+    -- blue
+    [1] = {
+        ['r'] = 99,
+        ['g'] = 155,
+        ['b'] = 255
+    },
+    -- green
+    [2] = {
+        ['r'] = 106,
+        ['g'] = 190,
+        ['b'] = 47
+    },
+    -- red
+    [3] = {
+        ['r'] = 217,
+        ['g'] = 87,
+        ['b'] = 99
+    },
+    -- purple
+    [4] = {
+        ['r'] = 215,
+        ['g'] = 123,
+        ['b'] = 186
+    },
+    -- gold
+    [5] = {
+        ['r'] = 251,
+        ['g'] = 242,
+        ['b'] = 54
+    }
 }
 
 function Brick:init(x, y)
@@ -121,7 +156,7 @@ function Brick:render()
         love.graphics.draw(
             gTextures['main'],
             -- multiply color by 4 (-1) to get our color offset, then add tier to that to draw the correct tier and color brick onto screen
-            gFrames['bricks'][1 + ((self.color + 1) * 4) + self.tier],
+            gFrames['bricks'][1 + ((self.color - 1) * 4) + self.tier],
             self.x, self.y
         )
     end
