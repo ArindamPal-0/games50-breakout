@@ -30,6 +30,7 @@ require 'src/Util'
 -- each of the individual states our game can be in at once; each state has its own update and render methods that can be called by our state machine each frame, to avoid bulky code in main.lua
 require 'src/states/BaseState'
 require 'src/states/GameOverState'
+require 'src/states/HighScoreState'
 require 'src/states/PlayState'
 require 'src/states/ServeState'
 require 'src/states/StartState'
