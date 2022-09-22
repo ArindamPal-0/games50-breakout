@@ -33,6 +33,7 @@ function love.load()
 
     -- Quads we will generate for all of our textures; Quads allow us to show only part of a texture and not the entire thing
     gFrames = {
+        ['arrows'] = GenerateQuads(gTextures['arrows'], 24, 24),
         ['paddles'] = GenerateQuadsPaddles(gTextures['main']),
         ['balls'] = GenerateQuadsBalls(gTextures['main']),
         ['bricks'] = GenerateQuadsBricks(gTextures['main']),
@@ -74,7 +75,7 @@ function love.load()
 
         our current game state can be any of the following:
         1. 'start' (the beginning of the game, where we're told to press Enter)
-        2. 'paddle-start' (where we get to choose the color of our paddle)
+        2. 'paddle-select' (where we get to choose the color of our paddle)
         3. 'serve' (waiting on a key press to serve the ball)
         4. 'play' (the ball is in play, bouncing between paddles)
         5. 'victory' (the current level is over, with a victory jingle)
@@ -87,7 +88,8 @@ function love.load()
         ['game-over'] = function() return GameOverState() end,
         ['victory'] = function() return VictoryState() end,
         ['high-scores'] = function() return HighScoreState() end,
-        ['enter-high-score'] = function() return EnterHighScoreState() end
+        ['enter-high-score'] = function() return EnterHighScoreState() end,
+        ['paddle-select'] = function() return PaddleSelectState() end
     }
     gStateMachine:change('start', {
         highScores = loadHighScores()
