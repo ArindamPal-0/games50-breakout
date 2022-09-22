@@ -1,3 +1,12 @@
+--[[
+    Credit for graphics (amazing work!):
+    https://opengameart.org/users/buch
+
+    Credit for music (great loop):
+    http://freesound.org/people/joshuaempyre/sounds/251461/
+    http://www.soundcloud.com/empyreanma
+]]
+
 require 'src/Dependencies'
 
 --[[
@@ -94,6 +103,10 @@ function love.load()
     gStateMachine:change('start', {
         highScores = loadHighScores()
     })
+
+    -- play our music outside of all states and set it to looping
+    gSounds['music']:play()
+    gSounds['music']:setLooping(true)
 
     -- a table we'll use to keep track of which keys have been pressed this frame, to get around the fact that LÖVE's default callback won't let us test for input from within other functions
     love.keyboard.keysPressed = {}
