@@ -6,6 +6,12 @@ local highlighted = 1
 
 function StartState:enter(params)
     self.highScores = params.highScores
+
+    -- print('StartState.lua:enter')
+    -- print(self.highScores[1].name)
+    -- print(self.highScores[1].score)
+    -- print(self.highScores[10].name)
+    -- print(self.highScores[10].score)
 end
 
 function StartState:update(dt)
@@ -25,6 +31,7 @@ function StartState:update(dt)
                 bricks = LevelMaker.createMap(1),
                 health = 3,
                 score = 0,
+                highScores = self.highScores,
                 level = 1
             })
         else
@@ -34,7 +41,16 @@ function StartState:update(dt)
         end
     end
 
-    -- we no  longer have this globally, so include here
+    -- directly enter EnterHighScoreState (debug purposes)
+    -- if love.keyboard.wasPressed('h') then
+    --     gStateMachine:change('enter-high-score', {
+    --         highScores = self.highScores,
+    --         score = 150,
+    --         scoreIndex = 1
+    --     })
+    -- end
+
+    -- we no longer have this globally, so include here
     if love.keyboard.wasPressed('escape') then
         love.event.quit()
     end

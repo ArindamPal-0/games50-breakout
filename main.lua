@@ -86,7 +86,8 @@ function love.load()
         ['serve'] = function() return ServeState() end,
         ['game-over'] = function() return GameOverState() end,
         ['victory'] = function() return VictoryState() end,
-        ['high-scores'] = function() return HighScoreState() end
+        ['high-scores'] = function() return HighScoreState() end,
+        ['enter-high-score'] = function() return EnterHighScoreState() end
     }
     gStateMachine:change('start', {
         highScores = loadHighScores()
@@ -172,10 +173,10 @@ function loadHighScores()
 
     -- if the file doesn't exist, initialize it with some default scores
     if not love.filesystem.getInfo('breakout.lst') then
-        local scores = ''
+        local scores = '';
         for i = 10, 1, -1 do
             scores = scores .. 'CTO\n'
-            scores = scores .. tostring(i * 1000) .. '\n'
+            scores = scores .. tostring(i) .. '\n'
         end
 
         love.filesystem.write('breakout.lst', scores)
@@ -190,7 +191,7 @@ function loadHighScores()
     local scores = {}
 
     for i = 1, 10 do
-        -- black table; each will hold a name and a score
+        -- blank table; each will hold a name and a score
         scores[i] = {
             name = nil,
             score = nil
@@ -209,6 +210,12 @@ function loadHighScores()
         -- flip the name flag
         name = not name
     end
+
+    -- print('main.lua:loadHighScores')
+    -- print(scores[1].name)
+    -- print(scores[1].score)
+    -- print(scores[10].name)
+    -- print(scores[10].score)
 
     return scores
 end
